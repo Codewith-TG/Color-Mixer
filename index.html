@@ -43,7 +43,13 @@
         padding: 20px;
         background: #0b1220;
         border-radius: 20px;
-        box-shadow: 0 0 25px #0033ff55;
+
+        /* ⭐ Container will glow with current color */
+        box-shadow: 
+            0 0 20px var(--glow),
+            0 0 55px var(--glow);
+        transition: box-shadow 0.3s ease-in-out;
+
         margin-bottom: 30px;
     }
 
@@ -54,7 +60,7 @@
         font-size: 18px;
     }
 
-    /* ⭐ MAIN FIXED SLIDERS */
+    /* ⭐ SLIDERS PERFECT */
     input[type="range"] {
         width: 100%;
         margin-top: 5px;
@@ -66,7 +72,6 @@
         position: relative;
     }
 
-    /* ⭐ Slider Track Color Fill */
     input[type="range"]::before {
         content: "";
         position: absolute;
@@ -78,7 +83,7 @@
         background: var(--fillColor);
     }
 
-    /* ⭐ Thumb Circle FIXED (Pure Strong Color) */
+    /* ⭐ PERFECT GLOW THUMB */
     input[type="range"]::-webkit-slider-thumb {
         appearance: none;
         width: 24px;
@@ -87,18 +92,21 @@
         background: var(--thumbColor);
         border: 3px solid white;
         cursor: pointer;
-        box-shadow: 0 0 10px var(--thumbColor);
+        box-shadow: 0 0 12px var(--thumbColor);
     }
 
+    /* ⭐ PREVIEW BOX glowing with same color */
     #preview {
         width: 100%;
         height: 180px;
         margin-top: 30px;
         border-radius: 20px;
         background: #000;
-        border: 4px solid transparent; /* ⭐ WHITE BORDER REMOVED */
-        box-shadow: 0 0 35px var(--glow);
-        transition: box-shadow 0.2s ease-in-out;
+
+        box-shadow:
+            0 0 25px var(--glow),
+            0 0 50px var(--glow);
+        transition: box-shadow 0.3s ease-in-out;
     }
 
     #hexValue, #rgbValue {
@@ -131,10 +139,10 @@
     <label>Red <span id="redPercent">0%</span></label>
     <input type="range" id="red" min="0" max="255" value="0" oninput="updateColor()">
 
-    <label>Green <span id="greenPercent">0%"</span></label>
+    <label>Green <span id="greenPercent">0%</span></label>
     <input type="range" id="green" min="0" max="255" value="0" oninput="updateColor()">
 
-    <label>Blue <span id="bluePercent">0%"</span></label>
+    <label>Blue <span id="bluePercent">0%</span></label>
     <input type="range" id="blue" min="0" max="255" value="0" oninput="updateColor()">
 
     <div id="preview"></div>
@@ -144,9 +152,7 @@
 </div>
 
 <footer>
-    
-    <div>Developed by TG Farmaan</div>
-    
+    Developed by TG Farmaan
 </footer>
 
 <script>
@@ -167,13 +173,16 @@ function updateColor() {
         Number(g).toString(16).padStart(2, '0') +
         Number(b).toString(16).padStart(2, '0');
 
-    document.getElementById("preview").style.background = rgb;
+    /* Preview background */
+    preview.style.background = rgb;
+
+    /* ⭐ BOTH preview + container glow use same color */
     document.documentElement.style.setProperty("--glow", rgb);
 
     hexValue.innerText = hex.toUpperCase();
     rgbValue.innerText = `${r}, ${g}, ${b}`;
 
-    /* ⭐ Slider Progress + Thumb Color */
+    /* Slider Colors */
     red.style.setProperty("--thumbColor", "red");
     red.style.setProperty("--fillColor", "red");
     red.style.setProperty("--fill", (r / 255 * 100) + "%");
@@ -190,3 +199,4 @@ function updateColor() {
 
 </body>
 </html>
+        
