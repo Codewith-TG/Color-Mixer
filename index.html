@@ -43,13 +43,10 @@
         padding: 20px;
         background: #0b1220;
         border-radius: 20px;
-
-        /* ⭐ Container will glow with current color */
         box-shadow: 
             0 0 20px var(--glow),
             0 0 55px var(--glow);
         transition: box-shadow 0.3s ease-in-out;
-
         margin-bottom: 30px;
     }
 
@@ -60,7 +57,6 @@
         font-size: 18px;
     }
 
-    /* ⭐ SLIDERS PERFECT */
     input[type="range"] {
         width: 100%;
         margin-top: 5px;
@@ -83,7 +79,6 @@
         background: var(--fillColor);
     }
 
-    /* ⭐ PERFECT GLOW THUMB */
     input[type="range"]::-webkit-slider-thumb {
         appearance: none;
         width: 24px;
@@ -95,25 +90,59 @@
         box-shadow: 0 0 12px var(--thumbColor);
     }
 
-    /* ⭐ PREVIEW BOX glowing with same color */
     #preview {
         width: 100%;
         height: 180px;
         margin-top: 30px;
         border-radius: 20px;
         background: #000;
-
         box-shadow:
             0 0 25px var(--glow),
             0 0 50px var(--glow);
         transition: box-shadow 0.3s ease-in-out;
     }
 
-    #hexValue, #rgbValue {
-        text-align: center;
-        margin-top: 18px;
+    .code-row {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        margin-top: 15px;
         font-size: 22px;
-        letter-spacing: 1px;
+    }
+
+    .copy-btn {
+        background: #0077ff;
+        border: none;
+        padding: 6px 14px;
+        font-size: 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        color: white;
+        transition: 0.2s;
+    }
+
+    .copy-btn:hover {
+        opacity: 0.85;
+    }
+
+    .copy-btn:active {
+        transform: scale(0.92);
+    }
+
+    /* Tooltip */
+    .copy-btn.copied::after {
+        content: "Copied!";
+        position: absolute;
+        margin-left: 5px;
+        font-size: 12px;
+        color: #00ff84;
+        animation: fadeOut 1.5s forwards;
+    }
+
+    @keyframes fadeOut {
+        0% { opacity: 1; }
+        100% { opacity: 0; }
     }
 
     footer {
@@ -147,8 +176,16 @@
 
     <div id="preview"></div>
 
-    <div id="hexValue">#000000</div>
-    <div id="rgbValue">0, 0, 0</div>
+    <div class="code-row">
+        <span id="hexValue">#000000</span>
+        <button class="copy-btn" onclick="copyCode('hexValue', this)">Copy HEX</button>
+    </div>
+
+    <div class="code-row">
+        <span id="rgbValue">0, 0, 0</span>
+        <button class="copy-btn" onclick="copyCode('rgbValue', this)">Copy RGB</button>
+    </div>
+
 </div>
 
 <footer>
@@ -173,16 +210,12 @@ function updateColor() {
         Number(g).toString(16).padStart(2, '0') +
         Number(b).toString(16).padStart(2, '0');
 
-    /* Preview background */
     preview.style.background = rgb;
-
-    /* ⭐ BOTH preview + container glow use same color */
     document.documentElement.style.setProperty("--glow", rgb);
 
     hexValue.innerText = hex.toUpperCase();
     rgbValue.innerText = `${r}, ${g}, ${b}`;
 
-    /* Slider Colors */
     red.style.setProperty("--thumbColor", "red");
     red.style.setProperty("--fillColor", "red");
     red.style.setProperty("--fill", (r / 255 * 100) + "%");
@@ -195,8 +228,17 @@ function updateColor() {
     blue.style.setProperty("--fillColor", "#00aaff");
     blue.style.setProperty("--fill", (b / 255 * 100) + "%");
 }
+
+function copyCode(id, btn) {
+    let text = document.getElementById(id).innerText;
+    navigator.clipboard.writeText(text);
+
+    btn.classList.add("copied");
+    setTimeout(() => {
+        btn.classList.remove("copied");
+    }, 1500);
+}
 </script>
 
 </body>
 </html>
-        
