@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Color Mixer</title>
+<style>
+    body {
+        margin: 0;
+        height: 100vh;
+        background: #04060f;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: Poppins, sans-serif;
+        color: white;
+    }
+
+    .container {
+        width: 360px;
+        padding: 25px;
+        border-radius: 22px;
+        backdrop-filter: blur(18px);
+        background: rgba(255, 255, 255, 0.05);
+        box-shadow: 0 0 35px rgba(0, 150, 255, 0.3);
+        border: 1px solid rgba(0,255,255,0.2);
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #78c7ff;
+        font-weight: 500;
+    }
+
+    .sliderGroup {
+        margin-bottom: 18px;
+    }
+
+    label {
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+
+    input[type="range"] {
+        width: 100%;
+        height: 6px;
+        background: #1b1f2a;
+        border-radius: 10px;
+        appearance: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        background: #00aaff;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    .colorPreview {
+        width: 100%;
+        height: 110px;
+        border-radius: 14px;
+        margin-top: 18px;
+        margin-bottom: 25px;
+        border: 1px solid rgba(255,255,255,0.2);
+        box-shadow: 0 0 20px rgba(0,150,255,0.3);
+    }
+
+    .valueBox {
+        text-align: center;
+        padding: 12px 0;
+        font-size: 20px;
+        margin-bottom: 25px;  /* Yahan extra gap diya */
+        border-bottom: 1px solid rgba(255,255,255,0.15);
+    }
+
+    .rgbBox {
+        text-align: center;
+        font-size: 17px;
+        opacity: 0.9;
+        margin-top: 10px;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Color Mixer</h2>
+
+    <!-- Sliders -->
+    <div class="sliderGroup">
+        <label>Red <span id="rPercent">0%</span></label>
+        <input type="range" id="red" min="0" max="255" value="0">
+    </div>
+
+    <div class="sliderGroup">
+        <label>Green <span id="gPercent">0%</span></label>
+        <input type="range" id="green" min="0" max="255" value="0">
+    </div>
+
+    <div class="sliderGroup">
+        <label>Blue <span id="bPercent">0%</span></label>
+        <input type="range" id="blue" min="0" max="255" value="0">
+    </div>
+
+    <!-- Color Preview -->
+    <div class="colorPreview" id="output"></div>
+
+    <!-- HEX Value -->
+    <div class="valueBox" id="hexValue">#000000</div>
+
+    <!-- RGB Value -->
+    <div class="rgbBox" id="rgbValue">0, 0, 0</div>
+</div>
+
+<script>
+function updateColor() {
+    let r = document.getElementById("red").value;
+    let g = document.getElementById("green").value;
+    let b = document.getElementById("blue").value;
+
+    // % values
+    document.getElementById("rPercent").innerText = Math.round((r / 255) * 100) + "%";
+    document.getElementById("gPercent").innerText = Math.round((g / 255) * 100) + "%";
+    document.getElementById("bPercent").innerText = Math.round((b / 255) * 100) + "%";
+
+    // Apply color
+    document.getElementById("output").style.background = `rgb(${r}, ${g}, ${b})`;
+
+    // Convert to HEX
+    let hex =
+        "#" +
+        Number(r).toString(16).padStart(2, '0') +
+        Number(g).toString(16).padStart(2, '0') +
+        Number(b).toString(16).padStart(2, '0');
+
+    document.getElementById("hexValue").innerText = hex.toUpperCase();
+
+    // RGB (numbers only)
+    document.getElementById("rgbValue").innerText = `${r}, ${g}, ${b}`;
+}
+
+document.querySelectorAll("input").forEach(slider => {
+    slider.addEventListener("input", updateColor);
+});
+
+updateColor();
+</script>
+
+</body>
+</html>
