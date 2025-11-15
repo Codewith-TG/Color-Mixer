@@ -1,133 +1,191 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Advanced RGB Color Mixer with Live Preview">
-    <title>Color Mixer</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Color Mixer</title>
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<style>
+    :root {
+        --glow: #0033ff;
+    }
 
-        body {
-            background: #020611;
-            font-family: Arial, sans-serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            color: #fff;
-        }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+    }
 
-        header {
-            text-align: center;
-            padding: 22px 0;
-            font-size: 34px;
-            background: linear-gradient(90deg, #00eaff, #008cff, #0066ff);
-            -webkit-background-clip: text;
-            color: transparent;
-            font-weight: bold;
-        }
+    body {
+        background: #020611;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        color: white;
+    }
 
-        /* ⭐ Wide Mixer Box (Original Style Back) */
-        .mixer-box {
-            width: 92%;
-            margin: 20px auto;
-            padding: 22px;
-            border-radius: 22px;
-            background: #0b1220;
-            box-shadow: 0 0 20px #0044ff;
-        }
+    header {
+        text-align: center;
+        font-size: 36px;
+        font-weight: 700;
+        padding: 25px 0;
+        background: linear-gradient(90deg, #00eaff, #0077ff);
+        -webkit-background-clip: text;
+        color: transparent;
+    }
 
-        label {
-            font-size: 18px;
-            display: block;
-            margin-top: 18px;
-        }
+    .container {
+        width: 92%;
+        max-width: 520px;
+        margin: auto;
+        flex: 1;
+        padding: 20px;
+        background: #0b1220;
+        border-radius: 20px;
+        box-shadow: 0 0 25px #0033ff55;
+        margin-bottom: 30px;
+    }
 
-        input[type="range"] {
-            width: 100%;
-            margin-top: 5px;
-        }
+    label {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 25px;
+        font-size: 18px;
+    }
 
-        #preview {
-            width: 100%;
-            height: 160px;
-            margin-top: 25px;
-            border-radius: 18px;
-            background: #000;
-            box-shadow: 0 0 20px #0044ff;
-        }
+    /* ⭐ MAIN FIXED SLIDERS */
+    input[type="range"] {
+        width: 100%;
+        margin-top: 5px;
+        height: 6px;
+        appearance: none;
+        background: #111;
+        border-radius: 6px;
+        outline: none;
+        position: relative;
+    }
 
-        .value {
-            text-align: center;
-            margin-top: 15px;
-            font-size: 22px;
-        }
+    /* ⭐ Slider Track Color Fill */
+    input[type="range"]::before {
+        content: "";
+        position: absolute;
+        height: 6px;
+        left: 0;
+        top: 0;
+        border-radius: 6px;
+        width: var(--fill, 0%);
+        background: var(--fillColor);
+    }
 
-        /* Footer Always Bottom */
-        footer {
-            text-align: center;
-            padding: 15px 0;
-            margin-top: auto;
-            background: linear-gradient(90deg, #00eaff, #008cff, #0066ff);
-            -webkit-background-clip: text;
-            color: transparent;
-            font-weight: bold;
-            font-size: 18px;
-        }
-    </style>
+    /* ⭐ Thumb Circle FIXED (Pure Strong Color) */
+    input[type="range"]::-webkit-slider-thumb {
+        appearance: none;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: var(--thumbColor);
+        border: 3px solid white;
+        cursor: pointer;
+        box-shadow: 0 0 10px var(--thumbColor);
+    }
+
+    #preview {
+        width: 100%;
+        height: 180px;
+        margin-top: 30px;
+        border-radius: 20px;
+        background: #000;
+        border: 4px solid transparent; /* ⭐ WHITE BORDER REMOVED */
+        box-shadow: 0 0 35px var(--glow);
+        transition: box-shadow 0.2s ease-in-out;
+    }
+
+    #hexValue, #rgbValue {
+        text-align: center;
+        margin-top: 18px;
+        font-size: 22px;
+        letter-spacing: 1px;
+    }
+
+    footer {
+        text-align: center;
+        padding: 18px 0;
+        margin-top: auto;
+        background: linear-gradient(90deg, #00eaff, #00aaff, #0077ff);
+        -webkit-background-clip: text;
+        color: transparent;
+        font-weight: bold;
+        font-size: 18px;
+        line-height: 26px;
+    }
+</style>
 </head>
+
 <body>
 
 <header>Color Mixer</header>
 
-<div class="mixer-box">
-    <label>Red</label>
-    <input type="range" id="red" min="0" max="255" value="0">
+<div class="container">
 
-    <label>Green</label>
-    <input type="range" id="green" min="0" max="255" value="0">
+    <label>Red <span id="redPercent">0%</span></label>
+    <input type="range" id="red" min="0" max="255" value="0" oninput="updateColor()">
 
-    <label>Blue</label>
-    <input type="range" id="blue" min="0" max="255" value="0">
+    <label>Green <span id="greenPercent">0%"</span></label>
+    <input type="range" id="green" min="0" max="255" value="0" oninput="updateColor()">
+
+    <label>Blue <span id="bluePercent">0%"</span></label>
+    <input type="range" id="blue" min="0" max="255" value="0" oninput="updateColor()">
 
     <div id="preview"></div>
 
-    <div class="value" id="hexValue">#000000</div>
-    <div class="value" id="rgbValue">0, 0, 0</div>
+    <div id="hexValue">#000000</div>
+    <div id="rgbValue">0, 0, 0</div>
 </div>
 
-<footer>Color Mixer • © 2025 Tg Farmaan</footer>
+<footer>
+    
+    <div>Developed by TG Farmaan</div>
+    
+</footer>
 
 <script>
-    const red = document.getElementById("red");
-    const green = document.getElementById("green");
-    const blue = document.getElementById("blue");
+function updateColor() {
+    let r = red.value;
+    let g = green.value;
+    let b = blue.value;
 
-    function updateColor() {
-        let r = red.value;
-        let g = green.value;
-        let b = blue.value;
+    redPercent.textContent = Math.round((r / 255) * 100) + "%";
+    greenPercent.textContent = Math.round((g / 255) * 100) + "%";
+    bluePercent.textContent = Math.round((b / 255) * 100) + "%";
 
-        let rgb = `rgb(${r}, ${g}, ${b})`;
-        let hex =
-            "#" +
-            Number(r).toString(16).padStart(2, '0') +
-            Number(g).toString(16).padStart(2, '0') +
-            Number(b).toString(16).padStart(2, '0');
+    let rgb = `rgb(${r}, ${g}, ${b})`;
 
-        document.getElementById("preview").style.background = rgb;
-        document.getElementById("hexValue").innerText = hex.toUpperCase();
-        document.getElementById("rgbValue").innerText = `${r}, ${g}, ${b}`;
-    }
+    let hex =
+        "#" +
+        Number(r).toString(16).padStart(2, '0') +
+        Number(g).toString(16).padStart(2, '0') +
+        Number(b).toString(16).padStart(2, '0');
 
-    red.addEventListener("input", updateColor);
-    green.addEventListener("input", updateColor);
-    blue.addEventListener("input", updateColor);
+    document.getElementById("preview").style.background = rgb;
+    document.documentElement.style.setProperty("--glow", rgb);
+
+    hexValue.innerText = hex.toUpperCase();
+    rgbValue.innerText = `${r}, ${g}, ${b}`;
+
+    /* ⭐ Slider Progress + Thumb Color */
+    red.style.setProperty("--thumbColor", "red");
+    red.style.setProperty("--fillColor", "red");
+    red.style.setProperty("--fill", (r / 255 * 100) + "%");
+
+    green.style.setProperty("--thumbColor", "lime");
+    green.style.setProperty("--fillColor", "lime");
+    green.style.setProperty("--fill", (g / 255 * 100) + "%");
+
+    blue.style.setProperty("--thumbColor", "#00aaff");
+    blue.style.setProperty("--fillColor", "#00aaff");
+    blue.style.setProperty("--fill", (b / 255 * 100) + "%");
+}
 </script>
 
 </body>
